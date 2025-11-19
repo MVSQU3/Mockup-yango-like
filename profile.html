@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yango - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+        }
+
+        /* Header */
+        .screen-header {
+            background: linear-gradient(to right, #2563eb, #1e40af);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            padding-top: 1.5rem;
+        }
+
+        .screen-header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Profile card */
+        .profile-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #2563eb;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .profile-email {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .profile-phone {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0.25rem 0 0 0;
+        }
+
+        /* Stats section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 0;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0.5rem 0 0 0;
+        }
+
+        /* Menu section */
+        .menu-section {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: #f9fafb;
+        }
+
+        .menu-item i {
+            color: #2563eb;
+            font-size: 1.125rem;
+            min-width: 24px;
+            margin-right: 1rem;
+        }
+
+        .menu-item-text {
+            flex: 1;
+        }
+
+        .menu-item-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .menu-item-subtitle {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin: 0.25rem 0 0 0;
+        }
+
+        .menu-item-arrow {
+            color: #d1d5db;
+            font-size: 1.125rem;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #e5e7eb;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #16a34a;
+        }
+
+        .toggle-thumb {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active .toggle-thumb {
+            left: 24px;
+        }
+
+        /* Logout button */
+        .logout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #2563eb;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 1rem 0;
+            color: #1f2937;
+        }
+
+        .modal-content p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-cancel {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .modal-btn-confirm {
+            background: #dc2626;
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="screen-header">
+                <h1>Profilo</h1>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <img src="https://i.pravatar.cc/100?img=10" alt="User" class="profile-avatar">
+                    <h2 class="profile-name">Giovanni Bianchi</h2>
+                    <p class="profile-email">giovannibianchi@email.com</p>
+                    <p class="profile-phone">+39 123 456 7890</p>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <p class="stat-value">87</p>
+                        <p class="stat-label">Viaggi Totali</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-value">4.8</p>
+                        <p class="stat-label">Valutazione Media</p>
+                    </div>
+                </div>
+
+                <!-- Main content container -->
+                <div style="flex: 1; overflow-y: auto;">
+                    <!-- Account Section -->
+                    <div class="menu-section">
+                        <button class="menu-item" onclick="alert('Modifica profilo')">
+                            <i class="fas fa-user-edit"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Modifica Profilo</p>
+                                <p class="menu-item-subtitle">Aggiorna i tuoi dati</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                        <button class="menu-item" onclick="alert('Cambia password')">
+                            <i class="fas fa-lock"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Cambia Password</p>
+                                <p class="menu-item-subtitle">Aggiorna la tua sicurezza</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                        <button class="menu-item" onclick="alert('Indirizzi salvati')">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Indirizzi Salvati</p>
+                                <p class="menu-item-subtitle">Gestisci i tuoi indirizzi</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Preferences Section -->
+                    <div class="menu-section">
+                        <button class="menu-item" onclick="toggleNotifications()">
+                            <i class="fas fa-bell"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Notifiche</p>
+                                <p class="menu-item-subtitle">Ricevi aggiornamenti</p>
+                            </div>
+                            <div class="toggle-switch active" id="notificationsToggle">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </button>
+                        <button class="menu-item" onclick="toggleDarkMode()">
+                            <i class="fas fa-moon"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Modalità Scura</p>
+                                <p class="menu-item-subtitle">Tema scuro</p>
+                            </div>
+                            <div class="toggle-switch" id="darkModeToggle">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Support Section -->
+                    <div class="menu-section">
+                        <button class="menu-item" onclick="alert('FAQ')">
+                            <i class="fas fa-question-circle"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Domande Frequenti</p>
+                                <p class="menu-item-subtitle">Risposte comuni</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                        <button class="menu-item" onclick="alert('Contatta il supporto')">
+                            <i class="fas fa-headset"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Supporto Clienti</p>
+                                <p class="menu-item-subtitle">Contattaci 24/7</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                        <button class="menu-item" onclick="alert('Privacy policy')">
+                            <i class="fas fa-file-contract"></i>
+                            <div class="menu-item-text">
+                                <p class="menu-item-title">Privacy & Termini</p>
+                                <p class="menu-item-subtitle">Leggi i nostri termini</p>
+                            </div>
+                            <i class="menu-item-arrow fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Logout Section -->
+                    <button class="logout-btn" onclick="showLogoutModal()">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Esci
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-item" onclick="window.location.href='home.html'">
+                    <i class="fas fa-home"></i>
+                    Home
+                </button>
+                <button class="nav-item" onclick="window.location.href='history.html'">
+                    <i class="fas fa-history"></i>
+                    Cronologia
+                </button>
+                <button class="nav-item" onclick="window.location.href='wallet.html'">
+                    <i class="fas fa-wallet"></i>
+                    Portafoglio
+                </button>
+                <button class="nav-item active" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                    Profilo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <h2>Esci dal tuo account?</h2>
+            <p>Sei sicuro di voler uscire? Dovrai accedere di nuovo per continuare.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeLogoutModal()">
+                    Annulla
+                </button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmLogout()">
+                    Esci
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleNotifications() {
+            const toggle = document.getElementById('notificationsToggle');
+            toggle.classList.toggle('active');
+        }
+
+        function toggleDarkMode() {
+            const toggle = document.getElementById('darkModeToggle');
+            toggle.classList.toggle('active');
+            // In a real app, this would apply dark mode styles
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.add('show');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('show');
+        }
+
+        function confirmLogout() {
+            // Simulate logout with loading state
+            const modal = document.getElementById('logoutModal');
+            const content = modal.querySelector('.modal-content');
+            
+            content.innerHTML = '<div style="text-align: center;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #2563eb; margin-bottom: 1rem; display: block;"></i><p>Uscita in corso...</p></div>';
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

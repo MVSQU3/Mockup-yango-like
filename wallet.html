@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yango - Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+        }
+
+        /* Header */
+        .screen-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            padding-top: 1.5rem;
+        }
+
+        .screen-header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Balance card */
+        .balance-card {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            border-radius: 1rem;
+            padding: 2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 0.875rem;
+            color: #dbeafe;
+            margin: 0 0 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .balance-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .balance-action-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .balance-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .balance-action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Section title */
+        .section-title {
+            font-weight: bold;
+            color: #1f2937;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        /* Payment methods */
+        .payment-method-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .payment-method-card:hover {
+            border-color: #2563eb;
+            background: #f9fafb;
+        }
+
+        .payment-method-card.primary {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .payment-method-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .payment-method-icon {
+            width: 50px;
+            height: 50px;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #2563eb;
+        }
+
+        .payment-method-details {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .payment-method-detail {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .payment-method-badge {
+            background: #16a34a;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Transaction history */
+        .transaction-item {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .transaction-icon.debit {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .transaction-icon.credit {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .transaction-date {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .transaction-amount.debit {
+            color: #dc2626;
+        }
+
+        .transaction-amount.credit {
+            color: #16a34a;
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #2563eb;
+        }
+
+        /* Button styling */
+        button {
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="screen-header">
+                <h1>Portafoglio</h1>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Balance Card -->
+                <div class="balance-card">
+                    <p class="balance-label">Saldo Disponibile</p>
+                    <p class="balance-value">€25.50</p>
+                    <div class="balance-actions">
+                        <button class="balance-action-btn" onclick="alert('Ricarica portafoglio')">
+                            <i class="fas fa-plus"></i> Ricarica
+                        </button>
+                        <button class="balance-action-btn" onclick="alert('Preleva denaro')">
+                            <i class="fas fa-arrow-right"></i> Preleva
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main content container -->
+                <div style="flex: 1; overflow-y: auto;">
+                    <!-- Payment Methods Section -->
+                    <h3 class="section-title">Metodi di Pagamento</h3>
+
+                    <!-- Visa Card (Primary) -->
+                    <div class="payment-method-card primary">
+                        <div class="payment-method-info">
+                            <div class="payment-method-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-method-details">
+                                <p class="payment-method-name">Visa</p>
+                                <p class="payment-method-detail">•••• •••• •••• 1234</p>
+                            </div>
+                        </div>
+                        <span class="payment-method-badge">Predefinito</span>
+                    </div>
+
+                    <!-- PayPal Card -->
+                    <div class="payment-method-card">
+                        <div class="payment-method-info">
+                            <div class="payment-method-icon">
+                                <i class="fab fa-cc-paypal"></i>
+                            </div>
+                            <div class="payment-method-details">
+                                <p class="payment-method-name">PayPal</p>
+                                <p class="payment-method-detail">paypal@email.com</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-ellipsis-h text-gray-400 cursor-pointer"></i>
+                    </div>
+
+                    <!-- Apple Pay Card -->
+                    <div class="payment-method-card">
+                        <div class="payment-method-info">
+                            <div class="payment-method-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="payment-method-details">
+                                <p class="payment-method-name">Apple Pay</p>
+                                <p class="payment-method-detail">Disponibile</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-ellipsis-h text-gray-400 cursor-pointer"></i>
+                    </div>
+
+                    <!-- Transaction History Section -->
+                    <h3 class="section-title">Storico Transazioni</h3>
+
+                    <!-- Transaction 1 - Debit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon debit">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Viaggio</p>
+                            <p class="transaction-date">Oggi 14:30</p>
+                        </div>
+                        <p class="transaction-amount debit">-€7.50</p>
+                    </div>
+
+                    <!-- Transaction 2 - Debit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon debit">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Viaggio</p>
+                            <p class="transaction-date">Ieri 10:15</p>
+                        </div>
+                        <p class="transaction-amount debit">-€6.20</p>
+                    </div>
+
+                    <!-- Transaction 3 - Credit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon credit">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Ricarica</p>
+                            <p class="transaction-date">28 Novembre 15:45</p>
+                        </div>
+                        <p class="transaction-amount credit">+€20.00</p>
+                    </div>
+
+                    <!-- Transaction 4 - Debit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon debit">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Viaggio</p>
+                            <p class="transaction-date">25 Novembre 09:20</p>
+                        </div>
+                        <p class="transaction-amount debit">-€5.80</p>
+                    </div>
+
+                    <!-- Transaction 5 - Debit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon debit">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Viaggio</p>
+                            <p class="transaction-date">22 Novembre 18:00</p>
+                        </div>
+                        <p class="transaction-amount debit">-€12.30</p>
+                    </div>
+
+                    <!-- Transaction 6 - Credit -->
+                    <div class="transaction-item">
+                        <div class="transaction-icon credit">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <p class="transaction-title">Ricarica</p>
+                            <p class="transaction-date">15 Novembre 12:30</p>
+                        </div>
+                        <p class="transaction-amount credit">+€15.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-item" onclick="window.location.href='home.html'">
+                    <i class="fas fa-home"></i>
+                    Home
+                </button>
+                <button class="nav-item" onclick="window.location.href='history.html'">
+                    <i class="fas fa-history"></i>
+                    Cronologia
+                </button>
+                <button class="nav-item active" onclick="window.location.href='wallet.html'">
+                    <i class="fas fa-wallet"></i>
+                    Portafoglio
+                </button>
+                <button class="nav-item" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                    Profilo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interaction handlers can be added here
+        console.log('Wallet page loaded');
+    </script>
+</body>
+</html>
