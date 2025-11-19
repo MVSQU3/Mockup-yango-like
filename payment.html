@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider & Shader - Payment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        /* Header */
+        .screen-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .screen-header button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #2563eb;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .screen-header button:hover {
+            color: #1d4ed8;
+        }
+
+        .screen-header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            flex: 1;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Amount section */
+        .amount-section {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .amount-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .amount-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 0;
+        }
+
+        /* Summary section */
+        .summary-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-title {
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0 0 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #6b7280;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 2px solid #2563eb;
+            font-weight: bold;
+        }
+
+        .summary-total-label {
+            color: #1f2937;
+        }
+
+        .summary-total-value {
+            color: #2563eb;
+            font-size: 1.125rem;
+        }
+
+        /* Payment methods section */
+        .payment-methods-title {
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0 0 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        /* Payment method card */
+        .payment-method {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-method:hover {
+            border-color: #2563eb;
+            background: #f9fafb;
+        }
+
+        .payment-method.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .payment-method i {
+            font-size: 1.5rem;
+            color: #6b7280;
+            min-width: 30px;
+        }
+
+        .payment-method.selected i {
+            color: #2563eb;
+        }
+
+        .payment-method-info {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .payment-method-detail {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .payment-method-checkmark {
+            color: #2563eb;
+            font-size: 1.5rem;
+            display: none;
+        }
+
+        .payment-method.selected .payment-method-checkmark {
+            display: block;
+        }
+
+        /* Button styling */
+        button {
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #15803d;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        /* Footer buttons */
+        .footer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="screen-header">
+                <button onclick="window.location.href='arrived.html'">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1>Pagamento</h1>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Amount Section -->
+                <div class="amount-section">
+                    <p class="amount-label">Importo da pagare</p>
+                    <p class="amount-value">€7.50</p>
+                </div>
+
+                <!-- Summary Section -->
+                <div class="summary-section">
+                    <p class="summary-title">Riepilogo</p>
+                    <div class="summary-item">
+                        <span class="summary-label">Viaggio (2.3 km)</span>
+                        <span class="summary-value">€7.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Tassa</span>
+                        <span class="summary-value">€0.50</span>
+                    </div>
+                    <div class="summary-total">
+                        <span class="summary-total-label">Totale</span>
+                        <span class="summary-total-value">€7.50</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div>
+                    <p class="payment-methods-title">Metodo di Pagamento</p>
+
+                    <!-- Credit Card -->
+                    <div class="payment-method selected" onclick="selectPayment(this, 'card')">
+                        <i class="fas fa-credit-card"></i>
+                        <div class="payment-method-info">
+                            <p class="payment-method-name">Carta di Credito</p>
+                            <p class="payment-method-detail">•••• •••• •••• 1234</p>
+                        </div>
+                        <div class="payment-method-checkmark">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <!-- PayPal -->
+                    <div class="payment-method" onclick="selectPayment(this, 'paypal')">
+                        <i class="fab fa-cc-paypal"></i>
+                        <div class="payment-method-info">
+                            <p class="payment-method-name">PayPal</p>
+                            <p class="payment-method-detail">paypal@email.com</p>
+                        </div>
+                        <div class="payment-method-checkmark">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <!-- Wallet -->
+                    <div class="payment-method" onclick="selectPayment(this, 'wallet')">
+                        <i class="fas fa-wallet"></i>
+                        <div class="payment-method-info">
+                            <p class="payment-method-name">Portafoglio Rider & Shader</p>
+                            <p class="payment-method-detail">Saldo: €25.00</p>
+                        </div>
+                        <div class="payment-method-checkmark">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <!-- Apple Pay -->
+                    <div class="payment-method" onclick="selectPayment(this, 'apple')">
+                        <i class="fab fa-apple"></i>
+                        <div class="payment-method-info">
+                            <p class="payment-method-name">Apple Pay</p>
+                            <p class="payment-method-detail">Disponibile</p>
+                        </div>
+                        <div class="payment-method-checkmark">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <!-- Google Pay -->
+                    <div class="payment-method" onclick="selectPayment(this, 'google')">
+                        <i class="fab fa-google"></i>
+                        <div class="payment-method-info">
+                            <p class="payment-method-name">Google Pay</p>
+                            <p class="payment-method-detail">Disponibile</p>
+                        </div>
+                        <div class="payment-method-checkmark">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="footer-buttons">
+                    <button class="btn-primary" onclick="processPayment()">
+                        <i class="fas fa-lock mr-2"></i> Paga €7.50
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='arrived.html'">
+                        Indietro
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPaymentMethod = 'card';
+
+        function selectPayment(element, method) {
+            // Remove selected class from all methods
+            const methods = document.querySelectorAll('.payment-method');
+            methods.forEach(m => m.classList.remove('selected'));
+
+            // Add selected class to clicked element
+            element.classList.add('selected');
+            selectedPaymentMethod = method;
+
+            // Update button text
+            const paymentNames = {
+                'card': 'Carta di Credito',
+                'paypal': 'PayPal',
+                'wallet': 'Portafoglio',
+                'apple': 'Apple Pay',
+                'google': 'Google Pay'
+            };
+            
+            const btn = document.querySelector('.btn-primary');
+            btn.textContent = `Paga €7.50 con ${paymentNames[method]}`;
+        }
+
+        function processPayment() {
+            const loadingBtn = document.querySelector('.btn-primary');
+            const originalText = loadingBtn.textContent;
+            
+            loadingBtn.disabled = true;
+            loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Elaborazione...';
+
+            // Simulate payment processing
+            setTimeout(() => {
+                loadingBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Pagamento Riuscito!';
+                loadingBtn.style.background = '#16a34a';
+                
+                // Redirect after success
+                setTimeout(() => {
+                    window.location.href = 'rating.html';
+                }, 1500);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

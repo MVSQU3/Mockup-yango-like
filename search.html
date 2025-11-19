@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rider & Shader - Search Ride</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #f3f4f6;
+      }
+
+      /* Phone Container */
+      .phone-container {
+        width: 414px;
+        height: 896px;
+        border: 12px solid #1a1a1a;
+        border-radius: 50px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.3),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Encoche (notch) */
+      .phone-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 25px;
+        background: #1a1a1a;
+        border-radius: 0 0 30px 30px;
+        z-index: 10;
+      }
+
+      /* Contenu de l'écran */
+      .screen {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+      }
+
+      /* Header */
+      .screen-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 1.5rem;
+        padding-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .screen-header button {
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        color: #2563eb;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+
+      .screen-header button:hover {
+        color: #1d4ed8;
+      }
+
+      .screen-header h1 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #1f2937;
+        flex: 1;
+      }
+
+      /* Map Area */
+      .map-area {
+        height: 150px;
+        background: linear-gradient(135deg, #93c5fd, #60a5fa);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1e40af;
+        font-size: 0.875rem;
+      }
+
+      .map-area i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      /* Content */
+      .screen-content {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
+
+      /* Scrollbar styling */
+      .screen-content::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .screen-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .screen-content::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
+
+      /* Route info */
+      .route-info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .route-info p {
+        font-size: 0.875rem;
+        color: #1f2937;
+        margin: 0;
+        margin-bottom: 0.25rem;
+      }
+
+      .route-info p:first-child {
+        font-weight: 600;
+        color: #1e40af;
+      }
+
+      .route-info span {
+        font-size: 0.75rem;
+        color: #6b7280;
+        display: block;
+      }
+
+      /* Ride types */
+      .ride-types-header {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .ride-type {
+        border: 2px solid #e5e7eb;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .ride-type:hover {
+        border-color: #2563eb;
+        background: #f9fafb;
+      }
+
+      .ride-type.selected {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+
+      .ride-type-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .ride-type-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+      }
+
+      .ride-type-icon {
+        font-size: 1.5rem;
+        color: #2563eb;
+      }
+
+      .ride-type-text p {
+        margin: 0;
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 0.95rem;
+      }
+
+      .ride-type-text span {
+        font-size: 0.75rem;
+        color: #6b7280;
+        display: block;
+      }
+
+      .ride-type-price {
+        font-size: 1.125rem;
+        font-weight: bold;
+        color: #2563eb;
+      }
+
+      /* Button styling */
+      button {
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 1rem;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-sizing: border-box;
+        font-size: 1rem;
+        margin-top: 1rem;
+      }
+
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+
+      .btn-primary:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-container">
+      <div class="screen">
+        <!-- Header -->
+        <div class="screen-header">
+          <button onclick="window.location.href='home.html'">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <h1>Ricerca Ride</h1>
+        </div>
+
+        <!-- Map Area -->
+        <div class="map-area">
+          <i class="fas fa-map"></i>
+          <span>Mappa con rotta</span>
+        </div>
+
+        <!-- Content -->
+        <div class="screen-content">
+          <!-- Route Info -->
+          <div class="route-info">
+            <p>Da: Via Milano, Milano</p>
+            <p>A: Via Roma, Milano</p>
+            <span>Distanza: 2.3 km • Tempo: ~8 min</span>
+          </div>
+
+          <!-- Ride Types Header -->
+          <div class="ride-types-header">Tipo di Ride</div>
+
+          <!-- Ride Type 1: Rider & Shader Go -->
+          <div class="ride-type selected" onclick="selectRide(this, 'go')">
+            <div class="ride-type-content">
+              <div class="ride-type-info">
+                <div class="ride-type-icon">
+                  <i class="fas fa-car"></i>
+                </div>
+                <div class="ride-type-text">
+                  <p>Rider & Shader Go</p>
+                  <span>Veloci e economici</span>
+                </div>
+              </div>
+              <div class="ride-type-price">€7.50</div>
+            </div>
+          </div>
+
+          <!-- Ride Type 2: Rider & Shader Plus -->
+          <div class="ride-type" onclick="selectRide(this, 'plus')">
+            <div class="ride-type-content">
+              <div class="ride-type-info">
+                <div class="ride-type-icon">
+                  <i class="fas fa-car"></i>
+                </div>
+                <div class="ride-type-text">
+                  <p>Rider & Shader Plus</p>
+                  <span>Comfort e qualità</span>
+                </div>
+              </div>
+              <div class="ride-type-price">€12.30</div>
+            </div>
+          </div>
+
+          <!-- Ride Type 3: Rider & Shader Business -->
+          <div class="ride-type" onclick="selectRide(this, 'business')">
+            <div class="ride-type-content">
+              <div class="ride-type-info">
+                <div class="ride-type-icon">
+                  <i class="fas fa-car"></i>
+                </div>
+                <div class="ride-type-text">
+                  <p>Rider & Shader Business</p>
+                  <span>Premium e lusso</span>
+                </div>
+              </div>
+              <div class="ride-type-price">€18.50</div>
+            </div>
+          </div>
+
+          <!-- Continue Button -->
+          <button
+            class="btn-primary"
+            onclick="window.location.href='drivers.html'"
+          >
+            Continua con Rider & Shader Go
+          </button>
+        </div>
+      </div>
+
+    <script>
+      let selectedRideType = "go";
+
+      function selectRide(element, type) {
+        // Remove selected class from all ride types
+        const rideTypes = document.querySelectorAll(".ride-type");
+        rideTypes.forEach((rt) => rt.classList.remove("selected"));
+
+        // Add selected class to clicked element
+        element.classList.add("selected");
+        selectedRideType = type;
+
+        // Update button text based on selected ride type
+        const button = document.querySelector(".btn-primary");
+        const prices = {
+          go: { name: "Rider & Shader Go", price: "€7.50" },
+          plus: { name: "Rider & Shader Plus", price: "€12.30" },
+          business: { name: "Rider & Shader Business", price: "€18.50" },
+        };
+
+        button.textContent = `Continua con ${prices[type].name}`;
+      }
+    </script>
+  </body>
+</html>

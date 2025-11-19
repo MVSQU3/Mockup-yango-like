@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider & Shader - Waiting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #eff6ff, #ffffff);
+        }
+
+        /* Header */
+        .screen-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .screen-header button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #2563eb;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .screen-header button:hover {
+            color: #1d4ed8;
+        }
+
+        .screen-header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            flex: 1;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Main content */
+        .main-content {
+            text-align: center;
+        }
+
+        /* Car icon animation */
+        .car-icon-wrapper {
+            margin-bottom: 2rem;
+        }
+
+        .car-icon {
+            width: 80px;
+            height: 80px;
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 2.5rem;
+            color: #2563eb;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Titles */
+        .main-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-subtitle {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Driver info card */
+        .driver-info-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .driver-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #bfdbfe;
+        }
+
+        .driver-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .driver-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .driver-rating {
+            font-size: 0.75rem;
+            color: #f59e0b;
+            margin: 0;
+        }
+
+        .driver-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            color: #2563eb;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .action-button:hover {
+            background: #e5e7eb;
+        }
+
+        /* Route info */
+        .route-info {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .route-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .route-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .route-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .route-icon.from {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .route-icon.to {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .route-text {
+            text-align: left;
+        }
+
+        .route-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .route-value {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Button styling */
+        button {
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-danger {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        /* Footer buttons */
+        .footer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="screen-header">
+                <button onclick="window.history.back()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1>Viaggio Confermato</h1>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Car Icon -->
+                    <div class="car-icon-wrapper">
+                        <div class="car-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="main-title">Marco è in arrivo</h2>
+                    <p class="main-subtitle">Arriverà tra 3 minuti</p>
+                    <p class="text-xs text-gray-500 mb-6">BMW 320 • AB 123 CD</p>
+
+                    <!-- Driver Info Card -->
+                    <div class="driver-info-card">
+                        <div class="driver-header">
+                            <img src="https://i.pravatar.cc/60?img=1" alt="Driver" class="driver-avatar">
+                            <div class="driver-text">
+                                <p class="driver-name">Marco Rossi</p>
+                                <p class="driver-rating"><i class="fas fa-star"></i> 4.9 (542 avis)</p>
+                            </div>
+                            <div class="driver-actions">
+                                <button class="action-button" onclick="alert('Chiamata...')">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                                <button class="action-button" onclick="alert('Chat...')">
+                                    <i class="fas fa-message"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Info -->
+                    <div class="route-info">
+                        <div class="route-item">
+                            <div class="route-icon from">
+                                <i class="fas fa-circle-dot"></i>
+                            </div>
+                            <div class="route-text">
+                                <p class="route-label">Da</p>
+                                <p class="route-value">Via Milano, Milano</p>
+                            </div>
+                        </div>
+                        <div class="route-item">
+                            <div class="route-icon to">
+                                <i class="fas fa-location-dot"></i>
+                            </div>
+                            <div class="route-text">
+                                <p class="route-label">A</p>
+                                <p class="route-value">Via Roma, Milano</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="footer-buttons">
+                    <button class="btn-danger" onclick="if(confirm('Annullare il viaggio?')) window.location.href='home.html'">
+                        Annulla Viaggio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate driver arrival
+        let countdown = 3;
+        const subtitle = document.querySelector('.main-subtitle');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                subtitle.textContent = `Arriverà tra ${countdown} minuto${countdown > 1 ? 'i' : ''}`;
+            } else {
+                clearInterval(timer);
+                // After countdown, redirect to tracking
+                setTimeout(() => {
+                    window.location.href = 'tracking.html';
+                }, 1000);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider & Shader - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-bar h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .status-bar button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #4b5563;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .status-bar button:hover {
+            color: #2563eb;
+        }
+
+        /* Map Area */
+        .map-area {
+            height: 200px;
+            background: linear-gradient(135deg, #93c5fd, #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e40af;
+            font-size: 0.875rem;
+        }
+
+        .map-area i {
+            font-size: 2.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: white;
+            margin-top: -2rem;
+            border-radius: 2rem 2rem 0 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Input styling */
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            margin-bottom: 0.5rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Button styling */
+        button {
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* Quick actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-action {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 1rem 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #bfdbfe;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            background: #dbeafe;
+            border-color: #2563eb;
+        }
+
+        .quick-action i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action span {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: bold;
+        }
+
+        /* Recent trips */
+        .recent-section {
+            margin-top: 1.5rem;
+        }
+
+        .recent-section h3 {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .recent-trip {
+            background: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .recent-trip:hover {
+            background: #f3f4f6;
+            border-color: #2563eb;
+        }
+
+        .recent-trip-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .recent-trip-icon {
+            background: #dbeafe;
+            color: #2563eb;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .recent-trip-info {
+            flex: 1;
+        }
+
+        .recent-trip-info p {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .recent-trip-info span {
+            font-size: 0.75rem;
+            color: #6b7280;
+            display: block;
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #2563eb;
+        }
+
+        /* Link */
+        a {
+            color: #2563eb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <h1>Rider & Shader</h1>
+                <button onclick="window.location.href='profile.html'">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+
+            <!-- Map Area -->
+            <div class="map-area">
+                <i class="fas fa-map"></i>
+                <span>Mappa interattiva</span>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Search Inputs -->
+                <div class="mb-4">
+                    <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2 mb-2">
+                        <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                        <input type="text" placeholder="Da dove?" class="bg-gray-100 flex-1 outline-none border-none text-sm" style="margin-bottom: 0;">
+                    </div>
+                    
+                    <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2">
+                        <i class="fas fa-location-dot text-red-600 mr-2"></i>
+                        <input type="text" placeholder="Dove vai?" class="bg-gray-100 flex-1 outline-none border-none text-sm" style="margin-bottom: 0;">
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-action">
+                        <i class="fas fa-clock"></i>
+                        <span>Ora</span>
+                    </div>
+                    <div class="quick-action">
+                        <i class="fas fa-calendar"></i>
+                        <span>Dopo</span>
+                    </div>
+                    <div class="quick-action">
+                        <i class="fas fa-users"></i>
+                        <span>Share</span>
+                    </div>
+                    <div class="quick-action">
+                        <i class="fas fa-heart"></i>
+                        <span>Favoriti</span>
+                    </div>
+                </div>
+
+                <!-- Main Button -->
+                <button class="btn-primary mb-4" onclick="window.location.href='search.html'">
+                    Dove vai?
+                </button>
+
+                <!-- Recent Trips -->
+                <div class="recent-section">
+                    <h3>Recenti</h3>
+                    
+                    <div class="recent-trip" onclick="window.location.href='search.html'">
+                        <div class="recent-trip-item">
+                            <div class="recent-trip-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="recent-trip-info">
+                                <p>Via Roma, Milano</p>
+                                <span>Ieri a 14:30</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-trip" onclick="window.location.href='search.html'">
+                        <div class="recent-trip-item">
+                            <div class="recent-trip-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="recent-trip-info">
+                                <p>Stazione Centrale, Milano</p>
+                                <span>3 giorni fa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-trip" onclick="window.location.href='search.html'">
+                        <div class="recent-trip-item">
+                            <div class="recent-trip-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="recent-trip-info">
+                                <p>Aeroporto Linate, Milano</p>
+                                <span>1 settimana fa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-item active" onclick="window.location.href='home.html'">
+                    <i class="fas fa-home"></i>
+                    Home
+                </button>
+                <button class="nav-item" onclick="window.location.href='history.html'">
+                    <i class="fas fa-history"></i>
+                    Cronologia
+                </button>
+                <button class="nav-item" onclick="window.location.href='wallet.html'">
+                    <i class="fas fa-wallet"></i>
+                    Portafoglio
+                </button>
+                <button class="nav-item" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                    Profilo
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

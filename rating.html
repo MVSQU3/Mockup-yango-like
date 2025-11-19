@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider & Shader - Rating</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        /* Phone Container */
+        .phone-container {
+            width: 414px;
+            height: 896px;
+            border: 12px solid #1a1a1a;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encoche (notch) */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+
+        /* Contenu de l'écran */
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        /* Header */
+        .screen-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+
+        .screen-header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        /* Content */
+        .screen-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Scrollbar styling */
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .screen-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Main content */
+        .main-content {
+            text-align: center;
+        }
+
+        /* Driver card */
+        .driver-card {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .driver-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #bfdbfe;
+            margin: 0 auto 1rem;
+        }
+
+        .driver-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+        }
+
+        .driver-car {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Rating section */
+        .rating-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .rating-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Stars */
+        .stars-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .star {
+            font-size: 3rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #f59e0b;
+            transform: scale(1.2);
+        }
+
+        /* Rating display */
+        .rating-display {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .rating-display.show {
+            display: block;
+        }
+
+        .rating-text {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Comments section */
+        .comments-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .comments-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .comments-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .comments-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .comments-hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Button styling */
+        button {
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        /* Footer buttons */
+        .footer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Loading state */
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Emoji feedback */
+        .emoji-feedback {
+            font-size: 2rem;
+            margin-top: 0.5rem;
+            display: none;
+            animation: bounce 0.6s ease-out;
+        }
+
+        .emoji-feedback.show {
+            display: block;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Header -->
+            <div class="screen-header">
+                <h1>Come è stato il viaggio?</h1>
+            </div>
+
+            <!-- Content -->
+            <div class="screen-content">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Driver Card -->
+                    <div class="driver-card">
+                        <img src="https://i.pravatar.cc/80?img=1" alt="Driver" class="driver-avatar">
+                        <p class="driver-name">Marco Rossi</p>
+                        <p class="driver-car">BMW 320 • AB 123 CD</p>
+                    </div>
+
+                    <!-- Rating Section -->
+                    <div class="rating-section">
+                        <span class="rating-label">Valuta il conducente</span>
+                        
+                        <!-- Stars -->
+                        <div class="stars-container">
+                            <span class="star" data-rating="1" onclick="setRating(1)">★</span>
+                            <span class="star" data-rating="2" onclick="setRating(2)">★</span>
+                            <span class="star" data-rating="3" onclick="setRating(3)">★</span>
+                            <span class="star" data-rating="4" onclick="setRating(4)">★</span>
+                            <span class="star" data-rating="5" onclick="setRating(5)">★</span>
+                        </div>
+
+                        <!-- Rating Display -->
+                        <div class="rating-display" id="ratingDisplay">
+                            <p class="rating-text" id="ratingText"></p>
+                            <div class="emoji-feedback" id="emojiFeedback"></div>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <label class="comments-label">Commenti (Opzionale)</label>
+                        <textarea class="comments-input" id="comments" placeholder="Condividi la tua esperienza con Marco..."></textarea>
+                        <p class="comments-hint">I tuoi commenti aiuteranno a migliorare il servizio</p>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="footer-buttons">
+                    <button class="btn-primary" onclick="submitRating()">
+                        Invia Valutazione
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='home.html'">
+                        Salta Valutazione
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRating = 0;
+
+        const ratingTexts = {
+            1: '😞 Pessimo',
+            2: '😕 Non Soddisfatto',
+            3: '😐 Accettabile',
+            4: '😊 Buono',
+            5: '😍 Eccellente'
+        };
+
+        const emojis = {
+            1: '😞',
+            2: '😕',
+            3: '😐',
+            4: '😊',
+            5: '😍'
+        };
+
+        function setRating(rating) {
+            currentRating = rating;
+
+            // Update stars
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+
+            // Show rating display
+            const ratingDisplay = document.getElementById('ratingDisplay');
+            ratingDisplay.classList.add('show');
+
+            const ratingText = document.getElementById('ratingText');
+            ratingText.textContent = ratingTexts[rating];
+
+            const emojiFeedback = document.getElementById('emojiFeedback');
+            emojiFeedback.textContent = emojis[rating];
+            emojiFeedback.classList.add('show');
+
+            // Remove animation class after it plays
+            setTimeout(() => {
+                emojiFeedback.classList.remove('show');
+            }, 600);
+        }
+
+        function submitRating() {
+            if (currentRating === 0) {
+                alert('Per favore, valuta il conducente prima di inviare');
+                return;
+            }
+
+            const comments = document.getElementById('comments').value;
+            const submitBtn = document.querySelector('.btn-primary');
+            const originalText = submitBtn.textContent;
+
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Invio...';
+
+            // Simulate submission
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Valutazione Inviata!';
+                submitBtn.style.background = '#16a34a';
+
+                // Redirect to home
+                setTimeout(() => {
+                    window.location.href = 'history.html';
+                }, 1500);
+            }, 1500);
+        }
+
+        // Hover effect on stars
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', () => {
+                const rating = parseInt(star.dataset.rating);
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.style.color = '#f59e0b';
+                    } else {
+                        s.style.color = '#d1d5db';
+                    }
+                });
+            });
+        });
+
+        document.querySelector('.stars-container').addEventListener('mouseleave', () => {
+            stars.forEach((s, index) => {
+                if (index < currentRating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
