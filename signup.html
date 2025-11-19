@@ -1,303 +1,330 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rider & Shader - Signup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: #f3f4f6;
-        }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #f3f4f6;
+      }
 
-        /* Phone Container */
-        .phone-container {
-            width: 414px;
-            height: 896px;
-            border: 12px solid #1a1a1a;
-            border-radius: 50px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
-            overflow: hidden;
-            position: relative;
-        }
+      /* Phone Container */
+      .phone-container {
+        width: 414px;
+        height: 896px;
+        border: 12px solid #1a1a1a;
+        border-radius: 50px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.3),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
 
-        /* Encoche (notch) */
-        .phone-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 25px;
-            background: #1a1a1a;
-            border-radius: 0 0 30px 30px;
-            z-index: 10;
-        }
+      /* Encoche (notch) */
+      .phone-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 25px;
+        background: #1a1a1a;
+        border-radius: 0 0 30px 30px;
+        z-index: 10;
+      }
 
-        /* Contenu de l'écran */
-        .screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
+      /* Contenu de l'écran */
+      .screen {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+      }
 
-        /* Header */
-        .screen-header {
-            background: linear-gradient(to right, #2563eb, #1e40af);
-            color: white;
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+      /* Header */
+      .screen-header {
+        background: linear-gradient(to right, #2563eb, #1e40af);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
 
-        .screen-header h1 {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
+      .screen-header h1 {
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
 
-        /* Content */
-        .screen-content {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-        }
+      /* Content */
+      .screen-content {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
 
-        /* Scrollbar styling */
-        .screen-content::-webkit-scrollbar {
-            width: 4px;
-        }
+      /* Scrollbar styling */
+      .screen-content::-webkit-scrollbar {
+        width: 4px;
+      }
 
-        .screen-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+      .screen-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
 
-        .screen-content::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
+      .screen-content::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
 
-        /* Input styling */
-        input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            transition: border-color 0.3s;
-            box-sizing: border-box;
-        }
+      /* Input styling */
+      input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+      }
 
-        input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
+      input:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
 
-        /* Button styling */
-        button {
-            transition: all 0.3s;
-        }
+      /* Button styling */
+      button {
+        transition: all 0.3s;
+      }
 
-        .btn-primary {
-            width: 100%;
-            padding: 0.75rem;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
+      .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-sizing: border-box;
+      }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
 
-        .btn-secondary {
-            width: 100%;
-            padding: 0.75rem;
-            background: white;
-            color: #374151;
-            border: 2px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
+      .btn-secondary {
+        width: 100%;
+        padding: 0.75rem;
+        background: white;
+        color: #374151;
+        border: 2px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-sizing: border-box;
+      }
 
-        .btn-secondary:hover {
-            background: #f9fafb;
-        }
+      .btn-secondary:hover {
+        background: #f9fafb;
+      }
 
-        /* Checkbox */
-        .checkbox-container {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
+      /* Checkbox */
+      .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
 
-        .checkbox-container input[type="checkbox"] {
-            width: auto;
-            margin-top: 0.25rem;
-            cursor: pointer;
-        }
+      .checkbox-container input[type="checkbox"] {
+        width: auto;
+        margin-top: 0.25rem;
+        cursor: pointer;
+      }
 
-        .checkbox-container label {
-            font-size: 0.875rem;
-            color: #4b5563;
-            cursor: pointer;
-        }
+      .checkbox-container label {
+        font-size: 0.875rem;
+        color: #4b5563;
+        cursor: pointer;
+      }
 
-        .checkbox-container a {
-            color: #2563eb;
-            text-decoration: none;
-        }
+      .checkbox-container a {
+        color: #2563eb;
+        text-decoration: none;
+      }
 
-        .checkbox-container a:hover {
-            text-decoration: underline;
-        }
+      .checkbox-container a:hover {
+        text-decoration: underline;
+      }
 
-        /* Link */
-        a {
-            color: #2563eb;
-            text-decoration: none;
-            cursor: pointer;
-        }
+      /* Link */
+      a {
+        color: #2563eb;
+        text-decoration: none;
+        cursor: pointer;
+      }
 
-        a:hover {
-            text-decoration: underline;
-        }
+      a:hover {
+        text-decoration: underline;
+      }
 
-        /* Back button */
-        .back-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-        }
+      /* Back button */
+      .back-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+      }
 
-        .back-button:hover {
-            opacity: 0.8;
-        }
+      .back-button:hover {
+        opacity: 0.8;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="phone-container">
-        <div class="screen">
-            <!-- Header -->
-            <div class="screen-header">
-                <button class="back-button" onclick="window.location.href='login.html'">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <h1>Crea Account</h1>
-            </div>
-
-            <!-- Content -->
-            <div class="screen-content">
-                <!-- Name Input -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Nome Completo</label>
-                    <input type="text" placeholder="John Doe" id="fullname">
-                </div>
-
-                <!-- Email Input -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input type="email" placeholder="tu@email.com" id="email">
-                </div>
-
-                <!-- Phone Input -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Telefono</label>
-                    <input type="tel" placeholder="+39 123 456 7890" id="phone">
-                </div>
-
-                <!-- Password Input -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input type="password" placeholder="••••••••" id="password">
-                </div>
-
-                <!-- Confirm Password Input -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Conferma Password</label>
-                    <input type="password" placeholder="••••••••" id="confirmPassword">
-                </div>
-
-                <!-- Terms Checkbox -->
-                <div class="checkbox-container">
-                    <input type="checkbox" id="terms">
-                    <label for="terms">
-                        Accetto i <a href="#">Termini di Servizio</a> e la <a href="#">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <!-- Signup Button -->
-                <button class="btn-primary mb-4">Iscriviti</button>
-
-                <!-- Login Link -->
-                <p class="text-center text-gray-600 text-sm">
-                    Hai già un account? <a href="login.html">Accedi</a>
-                </p>
-            </div>
+      <div class="screen">
+        <!-- Header -->
+        <div class="screen-header">
+          <a href="home.html">
+            <button
+              class="back-button"
+              onclick="window.location.href='login.html'"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <h1>Crea Account</h1></a
+          >
         </div>
+
+        <!-- Content -->
+        <div class="screen-content">
+          <!-- Name Input -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Nome Completo</label
+            >
+            <input type="text" placeholder="John Doe" id="fullname" />
+          </div>
+
+          <!-- Email Input -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Email</label
+            >
+            <input type="email" placeholder="tu@email.com" id="email" />
+          </div>
+
+          <!-- Phone Input -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Telefono</label
+            >
+            <input type="tel" placeholder="+39 123 456 7890" id="phone" />
+          </div>
+
+          <!-- Password Input -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Password</label
+            >
+            <input type="password" placeholder="••••••••" id="password" />
+          </div>
+
+          <!-- Confirm Password Input -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Conferma Password</label
+            >
+            <input
+              type="password"
+              placeholder="••••••••"
+              id="confirmPassword"
+            />
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="checkbox-container">
+            <input type="checkbox" id="terms" />
+            <label for="terms">
+              Accetto i <a href="#">Termini di Servizio</a> e la
+              <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+
+          <!-- Signup Button -->
+          <button class="btn-primary mb-4">Iscriviti</button>
+
+          <!-- Login Link -->
+          <p class="text-center text-gray-600 text-sm">
+            Hai già un account? <a href="login.html">Accedi</a>
+          </p>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Handle signup form submission
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const terms = document.getElementById('terms').checked;
+      // Handle signup form submission
+      document
+        .querySelector(".btn-primary")
+        .addEventListener("click", function () {
+          const fullname = document.getElementById("fullname").value;
+          const email = document.getElementById("email").value;
+          const phone = document.getElementById("phone").value;
+          const password = document.getElementById("password").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+          const terms = document.getElementById("terms").checked;
 
-            // Validation
-            if (!fullname || !email || !phone || !password || !confirmPassword) {
-                alert('Per favore, riempi tutti i campi');
-                return;
-            }
+          // Validation
+          if (!fullname || !email || !phone || !password || !confirmPassword) {
+            alert("Per favore, riempi tutti i campi");
+            return;
+          }
 
-            if (password !== confirmPassword) {
-                alert('Le password non corrispondono');
-                return;
-            }
+          if (password !== confirmPassword) {
+            alert("Le password non corrispondono");
+            return;
+          }
 
-            if (!terms) {
-                alert('Per favore, accetta i Termini di Servizio');
-                return;
-            }
+          if (!terms) {
+            alert("Per favore, accetta i Termini di Servizio");
+            return;
+          }
 
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Per favore, inserisci un email valido');
-                return;
-            }
+          // Email validation
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            alert("Per favore, inserisci un email valido");
+            return;
+          }
 
-            // Password validation (minimo 6 caratteri)
-            if (password.length < 6) {
-                alert('La password deve avere almeno 6 caratteri');
-                return;
-            }
+          // Password validation (minimo 6 caratteri)
+          if (password.length < 6) {
+            alert("La password deve avere almeno 6 caratteri");
+            return;
+          }
 
-            // Redirect to home page
-            window.location.href = 'home.html';
+          // Redirect to home page
+          window.location.href = "home.html";
         });
     </script>
-</body>
+  </body>
 </html>
